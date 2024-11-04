@@ -1,0 +1,167 @@
+openapi: 3.0.3
+info:
+  title: My Blog API
+  description: API for managing users and accounts in the My Blog application
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+    description: Development server
+
+paths:
+  /users:
+    get:
+      summary: Retrieve a list of users
+      tags:
+        - User
+      responses:
+        '200':
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Add a new user
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: The created user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{id}:
+    get:
+      summary: Retrieve a specific user by ID
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to retrieve
+      responses:
+        '200':
+          description: A single user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+    delete:
+      summary: Delete a user by ID
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the user to delete
+      responses:
+        '200':
+          description: Deletion status
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '404':
+          description: User not found
+
+  /admin/accounts/register:
+    post:
+      summary: Register a new account
+      tags:
+        - Account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Account'
+      responses:
+        '201':
+          description: The created account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          description: Bad Request if account cannot be created
+
+  /admin/accounts:
+    get:
+      summary: Retrieve a list of accounts
+      tags:
+        - Account
+      responses:
+        '200':
+          description: A list of accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Account'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: johndoe@example.com
+    Account:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        username:
+          type: string
+          example: johndoe
+        password:
+          type: string
+          example: password123
+        enabled:
+          type: boolean
+          example: true
+        credentialExpired:
+          type: boolean
+          example: false
+        expired:
+          type: boolean
+          example: false
+        locked:
+          type: boolean
+          example: false
+        roles:
+          type: array
+          items:
+            type: string
+            example: ["ROLE_USER", "ROLE_ADMIN"]

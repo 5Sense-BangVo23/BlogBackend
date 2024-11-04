@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: blogdb
+      MYSQL_USER: bloguser
+      MYSQL_PASSWORD: blogpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - spring-blog-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring-blog-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/blogdb
+      SPRING_DATASOURCE_USERNAME: bloguser
+      SPRING_DATASOURCE_PASSWORD: blogpassword
+    ports:
+      - "8089:8080"
+    depends_on:
+      - db
+    networks:
+      - spring-blog-network
+
+volumes:
+  mysql-data:
+
+networks:
+  spring-blog-network:
